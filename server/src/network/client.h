@@ -1,5 +1,5 @@
 /* Authors: Kevin Morris, Gani Parrott, Jesse Hamburger
- * File: main.cpp
+ * File: client.h
  * TCP Module for this [server] aspect of multiplayer at SETI-Jam */
 #ifndef CLIENT_H
 #define CLIENT_H
@@ -15,6 +15,7 @@ public:
     ~ClientSocket();
 };
 
+// Let's keep this for later
 struct Client
 {
     ClientAddress addr;

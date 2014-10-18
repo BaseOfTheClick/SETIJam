@@ -1,5 +1,5 @@
 /* Authors: Kevin Morris, Gani Parrott, Jesse Hamburger
- * File: main.cpp
+ * File: select.h
  * TCP Module for this [server] aspect of multiplayer at SETI-Jam */
 #ifndef SELECT_H
 #define SELECT_H

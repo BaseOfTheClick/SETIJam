@@ -1,5 +1,5 @@
 /* Authors: Kevin Morris, Gani Parrott, Jesse Hamburger
- * File: main.cpp
+ * File: tcp.cpp
  * TCP Module for this [server] aspect of multiplayer at SETI-Jam */
 #include "tcp.h"
 #include <sys/socket.h>

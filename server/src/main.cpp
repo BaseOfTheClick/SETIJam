@@ -122,74 +122,8 @@ int main(int argc, char *argv[])
 
     }
 
-    /*
-    fd_set afds, rfds;
-    FD_ZERO(&afds);
-    FD_ZERO(&rfds);
-    FD_SET(server, &afds);
-
-    // Set highest fd
-    int max = server;
-
-    while(true)
-    {
-        rfds = afds;
-        int sel = ::select(FD_SETSIZE, &rfds, nullptr, nullptr, nullptr);
-
-        if(sel == -1)
-        {
-            cerr << "select(FD_SETSIZE, ...) failed\n";
-            break;
-        }
-        else if(!sel)
-        {
-            cout << "No data\n";
-            continue;
-        }
-
-        for(int i = 0; i < FD_SETSIZE; ++i)
-        {
-            if(FD_ISSET(i, &rfds) && i == server)
-            {
-                clients.emplace_back(ClientSocket());
-                clients.back() = server.accept();
-                if(clients.back() > 0)
-                {
-                    cout << "Client connected\n";
-
-                    clients.back().setNonBlock(1);
-                    FD_SET(clients.back(), &afds);
-                    max = clients.back();
-                }
-
-                cout << clients.back() << endl;
-            }
-            else if(FD_ISSET(i, &rfds))
-            {
-                char buf[256];
-                int b = read(i, buf, 255);
-                if(b > 0)
-                {
-                    buf[b - 1] = '\0';
-                    cout << buf << endl;
-                }
-                else
-                {
-                    FD_CLR(i, &afds);
-
-                    tools::remove_if(clients,
-                        [i](const ClientSocket& sock) {
-                            return sock == i;
-                        }
-                    );
-
-                    cout << "Socket " << i << " disconnected\n";
-                }
-            }
-
-        } // End of socket loop
-    } // End of main loop
-    */
+    for(auto& client : clients)
+        client.close();
 
     return 0;
 }
