@@ -21,8 +21,29 @@ public:
 
     LogFile& operator<<(const char *message);
 
+    template<typename... Args>
+    LogFile& write(Args&&... args)
+    {
+        getCurrentTime();
+        _ofs << _time << ' ';
+        return pushWrite(std::forward<Args>(args)...);
+    }
+
 private:
     void getCurrentTime();
+
+    template<typename T, typename... Args>
+    LogFile& pushWrite(T&& arg, Args&&... args)
+    {
+        _ofs << arg;
+        return pushWrite(std::forward<Args>(args)...);
+    }
+
+    LogFile& pushWrite() // Sentinel function for variadic write
+    {
+        _ofs << '\n';
+        return *this;
+    }
 
 };
 

@@ -24,6 +24,8 @@ ServerSocket& ServerSocket::bind(Address& addrList)
         if(_fd == -1)
             continue;
 
+        this->setSockOpt(SO_REUSEADDR, 1);
+
         if(::bind(_fd, addr->ai_addr, addr->ai_addrlen) == -1)
             this->close();
         else

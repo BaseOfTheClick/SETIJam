@@ -55,10 +55,10 @@ Socket& Socket::operator=(int&& fd)
     return *this;
 }
 
-void Socket::setSockOpt(int opt)
+void Socket::setSockOpt(int opt, int on)
 {
-    int optval = 1;
-    setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int));
+    int optval = on;
+    setsockopt(_fd, SOL_SOCKET, opt, &optval, sizeof(int));
 }
 
 Socket& Socket::close()

@@ -33,7 +33,7 @@ public:
 
     Socket& operator=(int&& fd);
 
-    void setSockOpt(int opt);
+    void setSockOpt(int opt, int on);
 
     Socket& close();
 };

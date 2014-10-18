@@ -20,48 +20,46 @@ int main(int argc, char *argv[])
     Address addr(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(!addr.getHost(HOST, PORT))
     {
-        log << "Unable to resolve host";
+        log.write("Unable to resolve ", HOST, ":", PORT);
         return 1;
     }
     else
     {
-        log << "Resolved host";
+        log.write("Resolved ", HOST, ":", PORT);
     }
 
     ServerSocket server;
-    server.setSockOpt(SO_REUSEADDR);
     if(server.bind(addr) <= 0)
     {
-        log << "Unable to bind to host";
+        log.write("Unable to bind to ", HOST, ":", PORT);
         return 2;
     }
     else
     {
-        log << "Bound to host";
+        log.write("Bound to ", HOST, ":", PORT);
     }
 
     cout << "Server FD: " << server << endl;
 
     if(!server.listen(10))
     {
-        log << "Unable to listen to host";
+        log.write("Unable to listen on ", HOST, ":", PORT);
         return 3;
     }
     else
     {
-        log << "Listening on host";
+        log.write("Listening on ", HOST, ":", PORT);
+        cout << "Listening on " << HOST << ":" << PORT << endl;
     }
-
-    cout << "Listening!\n";
 
     if(!server.accept())
     {
-        log << "Couldn't accept a connection\n";
+        log.write("Rejected a client on ", HOST, ":", PORT);
         return 4;
     }
     else
     {
-        log << "Accepted a client connection!\n";
+        log.write("Accepted a client on ", HOST, ":", PORT);
     }
 
     return 0;
