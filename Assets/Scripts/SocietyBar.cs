@@ -14,11 +14,11 @@ public class SocietyBar : MonoBehaviour {
 	public int resources;
 
     //max resource value
-    public const int resourcesMax = 100;
+    public int resourcesMax = 100;
 
     //constants for visual rep. of values
-    private const float minGfx = 6.8f;
-    private const float maxGfx = 20;
+    public float minGfx = 68f;
+    public float maxGfx = 200f;
 	
 	//default constructor
 	//doesn't set anything

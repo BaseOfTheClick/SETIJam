@@ -2,7 +2,7 @@
 
 using System.Collections;
 
-public class CameraControls : MonoBehaviour {
+public class CameraController : MonoBehaviour {
 	
 	// Zoom Vars
 	public Transform target;
@@ -41,9 +41,9 @@ public class CameraControls : MonoBehaviour {
 		x = angles.x;
 		y = angles.y;		
 		
-		if ( GetComponent<Rigidbody>() != null ) {
+		/*if ( GetComponent<Rigidbody>() != null ) {
 			rigidbody.freezeRotation = true;
-		}
+		}*/
 		
 		rotation = Quaternion.Euler (y, x, 0);
 		position = rotation * ( new Vector3(0.0f, 0.0f, -distance) + target.position );
@@ -66,14 +66,6 @@ public class CameraControls : MonoBehaviour {
 	}
 	
 	void LateUpdate(){
-		
-		// Orbit
-		if ( target != null && Input.GetButton ("Select") && Input.GetButton ("Move") ) {
-			
-			DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis ("Mouse Y") );
-			
-		}
-		
 		if ( xSmooth != x | ySmooth != y ){
 			
 			DoCamOrbit();
