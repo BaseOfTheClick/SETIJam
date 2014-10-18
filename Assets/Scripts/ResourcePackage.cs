@@ -5,7 +5,7 @@ using System.Collections;
 public class ResourcePackage : MonoBehaviour {
     public int resourceQuantity = 5;
     public float lerpTime = 2;
-    public float distanceFromCam = 18.6f;
+    public float distanceFromCam = 1.6f;
 
     private bool inCollider = false;
 
@@ -15,41 +15,28 @@ public class ResourcePackage : MonoBehaviour {
     {
         Vector3 currentPos = this.transform.position;
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = distanceFromCam;
+        mousePos.z = Camera.main.GetComponent<CameraController>().distance - distanceFromCam;
         Vector3 newPos = Camera.main.ScreenToWorldPoint(mousePos);
 
         this.transform.position = newPos;
 
 
-        Debug.Log("Position : (" + transform.position.x + ", " + transform.position.y + ", " + transform.position.z + ")") ;
+        //Debug.Log("Position : (" + transform.position.x + ", " + transform.position.y + ", " + transform.position.z + ")") ;
     }
 
-    void OnTriggerEnter(Collider col)
+    void OnCollisionEnter(Collision col)
     {
         inCollider = true;
         collidingWith = col.gameObject;
+
+        Debug.Log("Entered trigger");
     }
 
-    void OnTriggerExit(Collider col)
+    void OnCollisionExit(Collision col)
     {
         inCollider = false;
         collidingWith = null;
-    }
 
-    void OnMouseUp()
-    {
-        if (inCollider)
-        {
-            if (collidingWith != null)
-            {
-                collidingWith.GetComponent<SocietyBar>().addResources(resourceQuantity);
-                collidingWith.GetComponent<SocietyBar>().conveyResources();
-                Destroy(this);
-            }
-            else
-            {
-                Debug.Log("Resource Package is in collider but reference to collidingWith was not stored");
-            }
-        }
+        Debug.Log("Exited Trigger");
     }
 }

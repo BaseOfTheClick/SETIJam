@@ -54,13 +54,13 @@ public class SocietyBar : MonoBehaviour {
     //translate discrete resource quantity to graphical representation
     public void conveyResources()
     {
-        //max = 20
-        //min = 6.8
+        //max = 200
+        //min = 68
         GameObject bar = GameObject.Find("SocietyBar_Mask/SocietyBar_Bar");
 
         RectTransform barRect = bar.GetComponent<RectTransform>();
 
-        float diff = (maxGfx - minGfx) * (resources / resourcesMax);
+        float diff = (maxGfx - minGfx) * (1 + (resources / resourcesMax));
 
         barRect.sizeDelta = new Vector2(diff, diff);
     }
