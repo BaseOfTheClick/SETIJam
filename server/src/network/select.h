@@ -11,18 +11,16 @@
 class Multiplexer
 {
     std::vector<Socket *> sockets;
-    int max;
-    int current;
     fd_set afds, wfds, rfds;
 
 public:
     Multiplexer();
     bool insert(Socket *sock);
+    void eradicate(int s);
 
     int poll();
-    Socket* next();
-    bool setWrite(Socket *sock);
-    bool setRead(Socket *sock);
+    bool setWrite(int sock);
+    bool setRead(int sock);
 
 };
 

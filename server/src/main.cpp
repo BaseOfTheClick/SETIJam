@@ -5,6 +5,8 @@
 #include "network/address.h"
 #include "network/server.h"
 #include "network/select.h"
+#include "tools/remove_if.hpp"
+#include <map>
 #include <iostream>
 using namespace std;
 
@@ -60,23 +62,68 @@ int main(int argc, char *argv[])
         cout << "Listening on " << HOST << ":" << PORT << endl;
     }
 
-    /*
-    // Setup multiplexer here
-    Multiplexer select;
-    server.setSockOpt(O_NONBLOCK, 1);
-    select.insert(&server);
-    */
-    /*
-    vector<Client> clients;
-    */
-
+    // Client and select poll structure setup
     vector<ClientSocket> clients;
+    map<int, ClientSocket*> table;
+    Multiplexer select;
 
-    fd_set afds, rfds;
-
-    // Initialize rfds with server socket
     server.setNonBlock(1);
+    select.insert(&server);
 
+    while(true)
+    {
+        if(select.poll() == -1)
+        {
+            cerr << "select.poll() error\n";
+            break;
+        }
+
+        for(int i = 0; i < FD_SETSIZE; ++i)
+        {
+            if(i == server && select.setRead(i))
+            {
+                clients.emplace_back(ClientSocket());
+
+                ClientSocket& client = clients.back();
+                client = server.accept();
+
+                if(client)
+                {
+                    client.setNonBlock(1);
+                    select.insert(&client);
+                    table[client] = &client;
+                }
+                else
+                    log << "A client was rejected from the server";
+
+            }
+            else if(select.setRead(i))
+            {
+                char buf[512];
+
+                int bytes = recv(i, buf, 511, 0);
+                if(bytes < 0)
+                {
+                    select.eradicate(i);
+                    tools::remove_if(clients,
+                        [i](const ClientSocket& sock) {
+                            return i == sock;
+                        }
+                    );
+                }
+                else
+                {
+                    buf[bytes - 1] = '\0';
+                    cout << buf << endl;
+                    table[i]->write("Yolo!\n");
+                }
+            }
+        }
+
+    }
+
+    /*
+    fd_set afds, rfds;
     FD_ZERO(&afds);
     FD_ZERO(&rfds);
     FD_SET(server, &afds);
@@ -87,9 +134,13 @@ int main(int argc, char *argv[])
     while(true)
     {
         rfds = afds;
-        int sel = select(FD_SETSIZE, &rfds, nullptr, nullptr, nullptr);
+        int sel = ::select(FD_SETSIZE, &rfds, nullptr, nullptr, nullptr);
+
         if(sel == -1)
-            continue;
+        {
+            cerr << "select(FD_SETSIZE, ...) failed\n";
+            break;
+        }
         else if(!sel)
         {
             cout << "No data\n";
@@ -125,18 +176,20 @@ int main(int argc, char *argv[])
                 else
                 {
                     FD_CLR(i, &afds);
-                    for(auto it = clients.cbegin();
-                        it != clients.cend(); ++it)
-                    {
-                        if(*it == i)
-                            clients.erase(it);
-                    }
+
+                    tools::remove_if(clients,
+                        [i](const ClientSocket& sock) {
+                            return sock == i;
+                        }
+                    );
+
                     cout << "Socket " << i << " disconnected\n";
                 }
             }
-        }
 
-    }
+        } // End of socket loop
+    } // End of main loop
+    */
 
     return 0;
 }

@@ -31,7 +31,8 @@ public:
     Socket& operator=(int&& fd);
 
     explicit operator bool();
-    operator int&() const;
+    operator int() const;
+    operator int&();
 
     void setSockOpt(int opt, int on);
     void setNonBlock(int on);

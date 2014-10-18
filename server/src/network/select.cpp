@@ -2,9 +2,9 @@
  * File: main.cpp
  * TCP Module for this [server] aspect of multiplayer at SETI-Jam */
 #include "select.h"
+#include "../tools/remove_if.hpp"
 
 Multiplexer::Multiplexer()
-    : max(0), current(0)
 {
     FD_ZERO(&afds);
     FD_ZERO(&wfds);
@@ -14,16 +14,20 @@ Multiplexer::Multiplexer()
 bool Multiplexer::insert(Socket *sock)
 {
     for(auto& s : sockets)
+    {
         if(*sock == *s)
             return false;
+    }
 
     sockets.emplace_back(sock);
-    if(*sock > max)
-        max = *sock;
-
     FD_SET(*sock, &afds);
 
     return true;
+}
+
+void Multiplexer::eradicate(int sock)
+{
+    tools::remove_if(sockets, [sock](Socket *s) { return sock == *s; });
 }
 
 int Multiplexer::poll()
@@ -32,25 +36,14 @@ int Multiplexer::poll()
     return select(FD_SETSIZE, &rfds, &wfds, nullptr, nullptr);
 }
 
-Socket* Multiplexer::next()
+bool Multiplexer::setWrite(int sock)
 {
-    if(current + 1 == sockets.size())
-        current = 0;
-
-    if(current + 1 < sockets.size())
-        return nullptr;
-
-    return sockets[current++];
+    return FD_ISSET(sock, &wfds);
 }
 
-bool Multiplexer::setWrite(Socket *sock)
+bool Multiplexer::setRead(int sock)
 {
-    return FD_ISSET(*sock, &wfds);
-}
-
-bool Multiplexer::setRead(Socket *sock)
-{
-    return FD_ISSET(*sock, &rfds);
+    return FD_ISSET(sock, &rfds);
 }
 
 

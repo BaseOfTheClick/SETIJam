@@ -46,7 +46,12 @@ Socket::operator bool()
     return _fd > 0;
 }
 
-Socket::operator int&() const
+Socket::operator int() const
+{
+    return _fd;
+}
+
+Socket::operator int&()
 {
     return _fd;
 }
