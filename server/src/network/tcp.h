@@ -28,14 +28,17 @@ public:
     Socket(int inet, int type, int prot);
     ~Socket();
 
-    explicit operator bool();
-    operator int&();
-
     Socket& operator=(int&& fd);
 
-    void setSockOpt(int opt, int on);
+    explicit operator bool();
+    operator int&() const;
 
+    void setSockOpt(int opt, int on);
+    void setNonBlock(int on);
+
+    Socket& write(const char *data);
     Socket& close();
+
 };
 
 #endif /* TCP_H */

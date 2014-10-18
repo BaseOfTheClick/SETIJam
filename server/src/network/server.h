@@ -10,8 +10,6 @@
 
 class ServerSocket : public Socket
 {
-    std::vector<std::pair<ClientSocket, ClientAddress>> clients;
-
 public:
     ServerSocket();
     ServerSocket(Address& addr);
@@ -19,7 +17,7 @@ public:
 
     ServerSocket& bind(Address& addr);
     ServerSocket& listen(int backlog);
-    ServerSocket& accept();
+    ClientSocket accept();
 
 };
 

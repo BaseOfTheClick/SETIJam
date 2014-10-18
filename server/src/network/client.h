@@ -5,6 +5,7 @@
 #define CLIENT_H
 
 #include "tcp.h"
+#include <memory>
 
 class ClientSocket : public Socket
 {

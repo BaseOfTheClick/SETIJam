@@ -42,16 +42,13 @@ ServerSocket& ServerSocket::listen(int backlog)
     return *this;
 }
 
-ServerSocket& ServerSocket::accept()
+ClientSocket ServerSocket::accept()
 {
-    ClientAddress addr;
-    ClientSocket sock;
-
-    sock = ::accept(_fd, (struct sockaddr*)addr.sa, addr.len);
-
-    if(sock)
-        clients.emplace_back(sock, addr);
-
-    return *this;
+    ClientSocket client(::accept(_fd, nullptr, nullptr));
+    client.setSockOpt(SO_REUSEADDR, 1);
+    return move(client);
 }
+
+
+
 

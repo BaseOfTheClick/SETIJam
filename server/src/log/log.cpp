@@ -22,7 +22,7 @@ LogFile::~LogFile()
     delete [] _time;
 }
 
-LogFile& LogFile::operator<<(const char *message)
+LogFile& LogFile::operator<<(const string& message)
 {
     getCurrentTime();
     _ofs << _time << " " << message << endl;

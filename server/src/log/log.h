@@ -6,6 +6,7 @@
 
 #include <ctime>
 #include <fstream>
+#include <string>
 
 class LogFile
 {
@@ -19,7 +20,7 @@ public:
     LogFile(const char *path);
     ~LogFile();
 
-    LogFile& operator<<(const char *message);
+    LogFile& operator<<(const std::string& message);
 
     template<typename... Args>
     LogFile& write(Args&&... args)

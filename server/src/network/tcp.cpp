@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstring>
 #include <utility>
 using namespace std;
 
@@ -23,7 +24,8 @@ Buffer::~Buffer()
         delete [] _buffer;
 }
 
-Socket::Socket() : _fd(0)
+Socket::Socket()
+    : _fd(0)
 {
     // Default constructor
 }
@@ -36,7 +38,7 @@ Socket::Socket(int inet, int type, int prot)
 
 Socket::~Socket()
 {
-    this->close();
+    //this->close();
 }
 
 Socket::operator bool()
@@ -44,7 +46,7 @@ Socket::operator bool()
     return _fd > 0;
 }
 
-Socket::operator int&()
+Socket::operator int&() const
 {
     return _fd;
 }
@@ -61,12 +63,23 @@ void Socket::setSockOpt(int opt, int on)
     setsockopt(_fd, SOL_SOCKET, opt, &optval, sizeof(int));
 }
 
+void Socket::setNonBlock(int on)
+{
+    int f = fcntl(_fd, F_GETFL, 0);
+    fcntl(_fd, F_SETFL, on ? f | O_NONBLOCK : f | ~(O_NONBLOCK));
+}
+
+Socket& Socket::write(const char *data)
+{
+    ::write(_fd, data, strlen(data));
+    return *this;
+}
+
 Socket& Socket::close()
 {
     if(_fd > 0)
         ::close(_fd);
     return *this;
 }
-
 
 
