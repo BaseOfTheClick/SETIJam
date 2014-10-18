@@ -16,7 +16,10 @@ class LogFile
 
 public:
     LogFile();
+    LogFile(const char *path);
     ~LogFile();
+
+    LogFile& operator<<(const char *message);
 
 private:
     void getCurrentTime();

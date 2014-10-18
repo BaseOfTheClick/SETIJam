@@ -2,8 +2,15 @@
  * File: main.cpp
  * TCP Module for this [server] aspect of multiplayer at SETI-Jam */
 #include "log.h"
+using namespace std;
 
-LogFile::LogFile() : _time(new char[20])
+LogFile::LogFile() : _time(new char[21])
+{
+}
+
+LogFile::LogFile(const char *path)
+    : _ofs(path, ios::app)
+    , _time(new char[20])
 {
 }
 
@@ -13,6 +20,13 @@ LogFile::~LogFile()
         _ofs.close();
 
     delete [] _time;
+}
+
+LogFile& LogFile::operator<<(const char *message)
+{
+    getCurrentTime();
+    _ofs << _time << " " << message << endl;
+    return *this;
 }
 
 void LogFile::getCurrentTime()

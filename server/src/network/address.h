@@ -6,20 +6,45 @@
 
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <vector>
+
+struct AddressInfo
+{
+    int inet, type, prot;
+};
 
 class Address
 {
     struct addrinfo *_res;
+    AddressInfo _ai;
+    
+    std::vector<struct addrinfo *> _addrList;
 
 public:
     Address();
-    Address(Address&& other);
+    Address(int inet, int type, int prot);
     Address(const char *host, const char *port);
     ~Address();
 
-    int getHost(const char *host, const char *port);
+    std::vector<struct addrinfo *>::iterator begin();
+    std::vector<struct addrinfo *>::iterator end();
+
+    std::vector<struct addrinfo *>::const_iterator cbegin() const;
+    std::vector<struct addrinfo *>::const_iterator cend() const;
+
+    bool getHost(const char *host, const char *port);
 
 };
 
+struct ClientAddress
+{
+    sockaddr_in *sa;
+    socklen_t *len;
+    ClientAddress();
+    ~ClientAddress();
+};
+
 #endif /* ADDRESS_H */
+
+
 

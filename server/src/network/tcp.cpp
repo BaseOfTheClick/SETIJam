@@ -34,39 +34,39 @@ Socket::Socket(int inet, int type, int prot)
     _fd = socket(inet, type, prot);
 }
 
-Socket::Socket(const Socket& other) : _fd(other._fd)
-{
-    // Copy constructor
-}
-
-Socket::Socket(Socket&& other) : _fd(move(other._fd))
-{
-    // Move constructor
-}
-
 Socket::~Socket()
 {
     this->close();
 }
 
-int Socket::accept(int backlog)
+Socket::operator bool()
 {
-    return 0;
+    return _fd > 0;
 }
 
-int Socket::listen()
+Socket::operator int&()
 {
-    return 0;
+    return _fd;
 }
 
-int Socket::connect(const char *host, const char *port)
+Socket& Socket::operator=(int&& fd)
 {
-    return 0;
+    _fd = move(fd);
+    return *this;
 }
 
-void Socket::close()
+void Socket::setSockOpt(int opt)
+{
+    int optval = 1;
+    setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int));
+}
+
+Socket& Socket::close()
 {
     if(_fd > 0)
         ::close(_fd);
+    return *this;
 }
+
+
 

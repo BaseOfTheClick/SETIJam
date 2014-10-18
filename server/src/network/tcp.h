@@ -4,6 +4,9 @@
 #ifndef TCP_H
 #define TCP_H
 
+#include "address.h"
+#include <fcntl.h>
+
 class Buffer
 {
     char *_buffer;
@@ -17,20 +20,24 @@ public:
 
 class Socket
 {
+protected:
     int _fd {0};
 
 public:
     Socket();
     Socket(int inet, int type, int prot);
-    Socket(const Socket& other);
-    Socket(Socket&& other);
     ~Socket();
 
-    int accept(int backlog);
-    int listen();
-    int connect(const char *host, const char *port);
-    void close();
+    explicit operator bool();
+    operator int&();
+
+    Socket& operator=(int&& fd);
+
+    void setSockOpt(int opt);
+
+    Socket& close();
 };
 
 #endif /* TCP_H */
+
 
