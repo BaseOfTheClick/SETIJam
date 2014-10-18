@@ -10,7 +10,7 @@
 #include <iostream>
 using namespace std;
 
-const char * const HOST = "10.255.103.177";
+const char * const HOST = "0.0.0.0";
 const char * const PORT = "31337";
 
 void logHost(LogFile& log, const string& message)
