@@ -2,7 +2,7 @@
 
 using System.Collections;
 
-public class CameraController : MonoBehaviour {
+public class CameraControls : MonoBehaviour {
 	
 	// Zoom Vars
 	public Transform target;
@@ -67,6 +67,13 @@ public class CameraController : MonoBehaviour {
 	
 	void LateUpdate(){
 		
+		// Orbit
+		if ( target != null && Input.GetButton ("Select") && Input.GetButton ("Move") ) {
+			
+			DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis ("Mouse Y") );
+			
+		}
+		
 		if ( xSmooth != x | ySmooth != y ){
 			
 			DoCamOrbit();
@@ -76,27 +83,21 @@ public class CameraController : MonoBehaviour {
 	} // END LateUpdate
 	
 	public void DoCamOrbit( float mouseX, float mouseY ){
-		if ( target != null ) {
-			x += (float)( mouseX * xSpeed * 0.02f );
-			y -= (float)( mouseY * ySpeed * 0.02f );
-			
-			y = ClampAngle(y, yMinLimit, yMaxLimit);
-			
-			xSmooth = Mathf.SmoothDamp (xSmooth, x, ref xVelocity, smoothTime);
-			ySmooth = Mathf.SmoothDamp (ySmooth, y, ref yVelocity, smoothTime);
-			
-			posSmooth = target.position;
-			
-			rotation = Quaternion.Euler(ySmooth, xSmooth, 0);
-			position = rotation * ( new Vector3(0.0f, 0.0f, -smoothDistance) + posSmooth );
-			
-			transform.rotation = rotation;
-			transform.position = position;
-			
-			//Debug.Log ("Cam Angles-- x:" + xSmooth + ", y: " + ySmooth);
-		} else {
-			Debug.Log ("Be sure you have assigned an orbit target in the CameraControls script");
-		}
+		x += (float)( mouseX * xSpeed * 0.02f );
+		y -= (float)( mouseY * ySpeed * 0.02f );
+		
+		xSmooth = Mathf.SmoothDamp (xSmooth, x, ref xVelocity, smoothTime);
+		ySmooth = Mathf.SmoothDamp (ySmooth, y, ref yVelocity, smoothTime);
+		
+		ySmooth = ClampAngle(ySmooth, yMinLimit, yMaxLimit);
+		
+		posSmooth = target.position;
+		
+		rotation = Quaternion.Euler(ySmooth, xSmooth, 0);
+		position = rotation * ( new Vector3(0.0f, 0.0f, -smoothDistance) + posSmooth );
+		
+		transform.rotation = rotation;
+		transform.position = position;
 	}
 	
 	public void DoCamOrbit () {
