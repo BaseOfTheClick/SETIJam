@@ -8,11 +8,12 @@ using UnityEngine.UI;
 */
 public class SocietyBar : MonoBehaviour
 {
-    public float packetSize;
-
     //rate of change
-    //normalized value : between 0, and 1
+    //percent value
     public float rateOfChange;
+
+    //normalized percent between -1 and 1
+    public float rateRange;
 
     //discrete value 
     public float resources = 50;
@@ -87,7 +88,8 @@ public class SocietyBar : MonoBehaviour
     //updates the resources based on the rate of change
     public void updateResources()
     {
-        resources = (resources - packetSize < 0) ? 0 : resources - (float)(packetSize) * Time.deltaTime;
+        float randomDiff = (UnityEngine.Random.value < 0.5f) ? (UnityEngine.Random.value * rateRange) : -(UnityEngine.Random.value * rateRange);
+        resources = (resources - rateOfChange < 0) ? 0 : resources - (float)(rateOfChange + randomDiff) * Time.deltaTime;
     }
 
     public void Update()
