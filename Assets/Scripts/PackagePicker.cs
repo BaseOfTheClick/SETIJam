@@ -11,8 +11,10 @@ public class PackagePicker : MonoBehaviour {
     //the package to pick up
 	private GameObject resourcePackage;
 
-    //camera that has a CameraController component attached
+    //camera and a planet that has a CameraController component attached
 	public Camera specialCamera;
+
+	public Transform planetToOrbit;
 	
     //whether the camera should "orbit" or the mouse should pick up a package
 	private bool orbiting;
@@ -57,7 +59,7 @@ public class PackagePicker : MonoBehaviour {
 	
 	//fancy function
 	public void doCameraOrbit() {
-		specialCamera.gameObject.GetComponent<CameraController>().DoCamOrbit();
+		planetToOrbit.gameObject.GetComponent<CameraController>().DoCamOrbit();
 	}
 	
 	bool hasPackage() {

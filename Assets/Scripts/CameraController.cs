@@ -52,6 +52,7 @@ public class CameraController : MonoBehaviour {
 		transform.position = position;
 		
 		smoothDistance = -transform.localPosition.z;
+
 	}
 	
 	void Update(){

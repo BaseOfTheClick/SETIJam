@@ -15,7 +15,7 @@ public class ResourcePackage : MonoBehaviour {
     {
         Vector3 currentPos = this.transform.position;
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = Camera.main.GetComponent<CameraController>().distance - distanceFromCam;
+        mousePos.z = -Camera.main.transform.position.z - distanceFromCam;
         Vector3 newPos = Camera.main.ScreenToWorldPoint(mousePos);
 
         this.transform.position = newPos;

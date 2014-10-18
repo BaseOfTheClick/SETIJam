@@ -10,11 +10,14 @@ public class ResourceMover : MonoBehaviour {
     private bool camOrbitEnabled = false;
     private bool pickupEnabled = false;
 
+	private GameObject planet;
+
     RaycastHit camHit;
     
     // Use this for initialization
 	void Start () {
         mainCam = Camera.main;
+		planet = GameObject.Find("Planet");
 	}
 
     
@@ -40,11 +43,9 @@ public class ResourceMover : MonoBehaviour {
     {
         if (camOrbitEnabled)
         {
-<<<<<<< HEAD
-            mainCam.GetComponent<CameraController>().DoCamOrbit(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-=======
-            mainCam.GetComponent<CameraController>().DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") );
->>>>>>> fa84a18120c0e9b6b1a6b05a269d076f3647053c
+
+            planet.GetComponent<CameraController>().DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") );
+
         }
     }
 
