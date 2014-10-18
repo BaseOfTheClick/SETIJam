@@ -12,6 +12,13 @@ public class SocietyBar : MonoBehaviour {
 	
 	//discrete value 
 	public int resources;
+
+    //max resource value
+    public const int resourcesMax = 100;
+
+    //constants for visual rep. of values
+    private const float minGfx = 6.8f;
+    private const float maxGfx = 20;
 	
 	//default constructor
 	//doesn't set anything
@@ -43,6 +50,20 @@ public class SocietyBar : MonoBehaviour {
 	public void addResources(int val) {
 		this.resources += val;
 	}
+
+    //translate discrete resource quantity to graphical representation
+    public void conveyResources()
+    {
+        //max = 20
+        //min = 6.8
+        GameObject bar = GameObject.Find("SocietyBar_Mask/SocietyBar_Bar");
+
+        RectTransform barRect = bar.GetComponent<RectTransform>();
+
+        float diff = (maxGfx - minGfx) * (resources / resourcesMax);
+
+        barRect.sizeDelta = new Vector2(diff, diff);
+    }
 	
 	//updates the resource value based on the rate of change
 	//returns whether the value was less than 0 upon updating resources
@@ -57,4 +78,9 @@ public class SocietyBar : MonoBehaviour {
 		
 		return lessThanZero;
 	}
+
+    public void update()
+    {
+        updateResources();
+    }
 }

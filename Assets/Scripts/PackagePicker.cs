@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 /**
 TODO : Deal with other things to click on
+ * ********************Possibly Deprecated********************
 */
 public class PackagePicker : MonoBehaviour {
     //the package to pick up
-	private GameObject package;
+	private GameObject resourcePackage;
 
     //camera that has a CameraController component attached
 	public Camera specialCamera;
@@ -38,7 +39,7 @@ public class PackagePicker : MonoBehaviour {
 			if (rayHit.transform.gameObject.CompareTag("PLACEHOLDER")) {
 			
 				//store the package reference
-				package = rayHit.transform.gameObject;
+				resourcePackage = rayHit.transform.gameObject;
 				
 				//don't orbit the camera
 				orbiting = false;
@@ -60,12 +61,12 @@ public class PackagePicker : MonoBehaviour {
 	}
 	
 	bool hasPackage() {
-		return (package == null);
+		return (resourcePackage == null);
 	}
 	
 	GameObject removePackage() {
-        GameObject toRemove = package;
-        this.package = null;
+        GameObject toRemove = resourcePackage;
+        this.resourcePackage = null;
         return toRemove;
 	}
 	
