@@ -40,7 +40,7 @@ public class ResourceMover : MonoBehaviour {
     {
         if (camOrbitEnabled)
         {
-            mainCam.GetComponent<CameraController>().DoCamOrbit(Input.mousePosition.x, Input.mousePosition.y);
+            mainCam.GetComponent<CameraController>().DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") );
         }
     }
 

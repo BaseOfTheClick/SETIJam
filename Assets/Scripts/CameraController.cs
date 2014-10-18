@@ -75,6 +75,9 @@ public class CameraController : MonoBehaviour {
 	} // END LateUpdate
 	
 	public void DoCamOrbit( float mouseX, float mouseY ){
+
+		Debug.Log ("Orbiting");
+
 		x += (float)( mouseX * xSpeed * 0.02f );
 		y -= (float)( mouseY * ySpeed * 0.02f );
 		
