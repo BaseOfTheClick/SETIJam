@@ -31,3 +31,8 @@ ExportedObj/
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Server compile ignores
+server/build/
+server/.ycm_extra_conf.py
+
