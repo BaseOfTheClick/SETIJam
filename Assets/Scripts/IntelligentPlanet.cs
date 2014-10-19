@@ -9,6 +9,9 @@ Add class description please
 public class IntelligentPlanet : MonoBehaviour {
 	//rate of the change of the resources on this planet
 	public float spawnRate;
+
+    //speed of the planet orbit
+    public float orbitSpeed = 0.01f;
 	
 	//number of resources on the planet
     [SerializeField]
@@ -52,4 +55,14 @@ public class IntelligentPlanet : MonoBehaviour {
 		
 		return packageSize;
 	}
+
+    public void spinPlanet()
+    {
+        this.GetComponent<CameraController>().DoCamOrbit(orbitSpeed, 0.0f);
+    }
+
+    public void Update()
+    {
+        spinPlanet();
+    }
 }

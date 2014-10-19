@@ -54,7 +54,7 @@ public class ResourceMover : MonoBehaviour {
         if (camOrbitEnabled)
         {
             
-            planet.GetComponent<CameraController>().DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") );
+            //planet.GetComponent<CameraController>().DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") );
 
             if (Input.touchCount > 0)
             {

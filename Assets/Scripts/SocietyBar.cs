@@ -16,7 +16,7 @@ public class SocietyBar : MonoBehaviour
     public float rateRange;
 
     //discrete value 
-    public float resources = 50;
+    public float resources = 75;
 
     //max resource value
     public int resourcesMax = 100;
@@ -24,6 +24,9 @@ public class SocietyBar : MonoBehaviour
     //constants for visual rep. of values
     public float minGfx = 7.5f;
     public float maxGfx = 20f;
+
+    //the random, constant value of a bar's difference in rate of change
+    private float randDiff;
 
     //private float timeAccumulate = 0;
 
@@ -38,9 +41,19 @@ public class SocietyBar : MonoBehaviour
     //    this.resources = resources;
     //}
 
+    static bool setMin = false;
+    static bool setMax = false;
+
     public void Start()
     {
         conveyResources();
+        float diff = UnityEngine.Random.value * rateRange;
+
+        diff = (UnityEngine.Random.value > 50) ? diff : -diff;
+
+        rateOfChange -= diff;
+
+        rateOfChange = Mathf.Clamp(rateOfChange, 0.001f, 100f);
     }
 
     public float getRateOfChange()
@@ -114,14 +127,13 @@ public class SocietyBar : MonoBehaviour
         barRect.sizeDelta = new Vector2(diff, diff);
     }
 
+    
+
     //updates the resources based on the rate of change
     public void updateResources()
     {
-        float randomDiff = (UnityEngine.Random.value < 0.5f) ? 
-            (UnityEngine.Random.value * rateRange) : -(UnityEngine.Random.value * rateRange);
-
-        resources = (resources - rateOfChange < 0) ? 
-            0 : resources - (float)(rateOfChange + randomDiff) * Time.deltaTime;
+        resources -= (resources * (rateOfChange / 100) * Time.deltaTime);
+        resources = Mathf.Clamp(resources, 0, 100);
     }
 
     public void Update()
