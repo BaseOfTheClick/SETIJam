@@ -131,12 +131,37 @@ int main(int argc, char *argv[])
                         select.eradicate(i);
                     } 
 
+                    for(auto& e : name)
+                    {
+                        if(e == '\n')
+                            e = ' ';
+                    }
                     names[i] = name;
 
                     string planet = "Planet:" + to_string(p->world().x())
                                     + ":" + to_string(p->world().y()) + "\n";
                     table[i]->write(planet.c_str());
 
+                }
+                else if(buffer.substr(0, pos) == "Year")
+                {
+                    string years = buffer.substr(pos + 1,
+                                                 buffer.size() - pos - 1);
+
+                    int year = stoi(years);
+                    galaxy[names[i]].score = year * 3.3;
+
+                    string chart = "";
+                    for(auto& e : names)
+                    {
+                        chart += e.second + ": "
+                                 + to_string(galaxy[names[e.first]].score) + "\n";
+                    }
+
+                    for(auto& client : table)
+                    {
+                        client.second->write(chart.c_str());
+                    }
                 }
                 // End of client handler block
             }
