@@ -79,10 +79,7 @@ void Socket::setNonBlock(int on)
 
 Socket& Socket::write(const char *data)
 {
-    if(_fd == -1)
-        return *this;
-
-    ::send(_fd, data, strlen(data) + 1, 0);
+    ::write(_fd, data, strlen(data));
     return *this;
 }
 

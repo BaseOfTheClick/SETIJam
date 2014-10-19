@@ -72,14 +72,16 @@ public class SocietyBar : MonoBehaviour
     //translate discrete resource quantity to graphical representation
     public void conveyResources()
     {
-        //max = 200
-        //min = 68
-        RectTransform child = this.gameObject.GetComponentInChildren<RectTransform>();
 
-        GameObject bar = child.GetComponentInChildren<RectTransform>().gameObject;
+        RectTransform barRect = new RectTransform();
 
-        RectTransform barRect = bar.GetComponent<RectTransform>();
-
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("bar"))
+        {
+            if (obj.transform.parent.transform.parent == this.transform)
+            {
+                barRect = obj.GetComponent<RectTransform>();
+            }
+        }
         float diff = minGfx + ((resources * (maxGfx - minGfx)) / 100);
 
         //Debug.Log(diff);

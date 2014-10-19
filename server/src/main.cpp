@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 
     // Client and select poll structure setup
     //vector<ClientSocket> clients;
-    map<int, ClientSocket*> table;
+    map<int, unique_ptr<ClientSocket>> table;
     Multiplexer select;
 
     server.setNonBlock(1);
@@ -87,18 +87,13 @@ int main(int argc, char *argv[])
             {
                 if(server == i)
                 {
-                    unique_ptr<ClientSocket> client(new ClientSocket);
-                    *client = server.accept();
+                    ClientSocket *client = new ClientSocket(server.accept());
 
                     if(client)
                     {
                         client->setNonBlock(1);
                         select.insert(*client);
-
-                        if(table.find(*client) != table.end())
-                            table[*client]->close();
-
-                        table[*client] = client.get();
+                        table[*client] = unique_ptr<ClientSocket>(client);
                     }
                     else
                         log << "A client was rejected from the server";
@@ -108,27 +103,22 @@ int main(int argc, char *argv[])
                 {
                     char buf[512];
 
-                    int bytes = recv(i, buf, 255, 0);
-                    if(bytes <= 0)
+                    int bytes = recv(i, buf, 511, 0);
+                    if(bytes < 0)
                     {
+
                         select.eradicate(i);
                     }
                     else
                     {
                         buf[bytes] = '\0';
                         cout << buf;
-
                         if(string(buf).substr(0, 5) == "GIMME")
-                            table[i]->write("green");
-                        /*
-                        if(select.setWrite(i))
-                            table[i]->write("Yolo!\n");
-                        */
+                            table[i]->write("green\n");
                     }
                 }
             }
         }
-
     }
 
     for(auto& client : table)
