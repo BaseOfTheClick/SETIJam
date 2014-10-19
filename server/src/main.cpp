@@ -75,7 +75,6 @@ int main(int argc, char *argv[])
 
     Galaxy galaxy;
 
-    string buffer(256, '\0');
     while(true)
     {
         if(select.poll() == -1)
@@ -104,9 +103,8 @@ int main(int argc, char *argv[])
                     continue;
                 }
 
-                buffer.clear();
-                buffer.resize(256, '\0');
-                int bytes = recv(i, &buffer[0], 255, 0);
+                char buf[256];
+                int bytes = recv(i, &buf[0], 255, 0);
                 if(bytes <= 0)
                 {
                     table[i]->close();
@@ -115,12 +113,12 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
+                    string buffer(buf);
                     buffer[bytes] = '\0';
                     cout << "Client: " << buffer;
                     auto pos = buffer.find(':');
                     if(buffer.substr(0, pos) == "Login")
                     {
-                        buffer.erase(buffer.find_last_of('\n'));
                         string name = buffer.substr(pos + 1,
                                                     buffer.size() - pos);
                         galaxy.newPlayer(name);
