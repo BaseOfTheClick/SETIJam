@@ -1,6 +1,8 @@
 #ifndef PLANET_H
 #define PLANET_H
 
+#include <string>
+
 class SpaceObject
 {
 protected:    
@@ -29,7 +31,10 @@ private:
         int max {100};
     };
 
-    Aspect eco, politics, research;
+public:
+    Aspect eco, pol, res;
+
+    std::string standing() const;
 };
 
 class Planet : public SpaceObject

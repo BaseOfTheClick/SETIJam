@@ -23,7 +23,7 @@ class Galaxy : public umap<std::string, Player>
     
 public:
     Galaxy();
-    bool newPlayer(std::string name);
+    Player& newPlayer(std::string name);
     void rmPlayer(std::string name);
 
 private:

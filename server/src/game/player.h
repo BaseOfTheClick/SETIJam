@@ -8,6 +8,7 @@ class Player
 {
     std::string pname;
     Planet planet;
+    uint64_t current {0};
 
 public:
     Player();
@@ -15,7 +16,8 @@ public:
 
     const std::string& name() const;
     Planet& world();
-
 };
 
 #endif
+
+

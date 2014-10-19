@@ -110,22 +110,35 @@ int main(int argc, char *argv[])
                     table[i]->close();
                     galaxy.rmPlayer(names[i]);
                     select.eradicate(i);
-                }
-                else
-                {
-                    string buffer(buf);
-                    buffer[bytes] = '\0';
-                    cout << "Client: " << buffer;
-                    auto pos = buffer.find(':');
-                    if(buffer.substr(0, pos) == "Login")
-                    {
-                        string name = buffer.substr(pos + 1,
-                                                    buffer.size() - pos);
-                        galaxy.newPlayer(name);
-                        names[i] = name;
-                    }
+                    continue;
                 }
 
+                buf[bytes] = '\0';
+                string buffer(buf);
+
+                cout << "Client: " << buffer;
+                auto pos = buffer.find(':');
+                if(buffer.substr(0, pos) == "Login")
+                {
+                    string name = buffer.substr(pos + 1,
+                                                buffer.size() - pos);
+
+                    Player *p;
+                    try { p = &galaxy.newPlayer(name); }
+                    catch(...)
+                    {
+                        table[i]->close();
+                        select.eradicate(i);
+                    } 
+
+                    names[i] = name;
+
+                    string planet = "Planet:" + to_string(p->world().x())
+                                    + ":" + to_string(p->world().y()) + "\n";
+                    table[i]->write(planet.c_str());
+
+                }
+                // End of client handler block
             }
         }
     }

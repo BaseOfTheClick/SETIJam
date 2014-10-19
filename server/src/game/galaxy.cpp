@@ -4,10 +4,10 @@ using namespace std;
 Galaxy::Galaxy() = default;
 #include <iostream>
 using namespace std;
-bool Galaxy::newPlayer(string name)
+Player& Galaxy::newPlayer(string name)
 {
     if(this->find(name) != this->end())
-        return false;
+        throw std::domain_error("gg, wp");
 
     auto player = Player();
     auto& world = player.world();
@@ -28,8 +28,8 @@ bool Galaxy::newPlayer(string name)
 
     (*this)[name] = move(player);
 
-    cout << name << endl;
-    return true;
+    cout << name;
+    return (*this)[name];
 }
 
 void Galaxy::rmPlayer(std::string name)
