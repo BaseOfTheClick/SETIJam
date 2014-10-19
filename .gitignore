@@ -4,6 +4,7 @@
 Temp/
 Obj/
 UnityGenerated/
+*.cs.meta
 Library/
 
 # ===================================== #
