@@ -11,7 +11,8 @@ public class IntelligentPlanet : MonoBehaviour {
 	public float rateOfChange;
 	
 	//number of resources on the planet
-	public int resources;
+    [SerializeField]
+	private int resources;
 	
 	//default constructor
 	//does nothing

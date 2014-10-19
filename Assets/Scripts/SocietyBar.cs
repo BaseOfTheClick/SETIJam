@@ -25,7 +25,7 @@ public class SocietyBar : MonoBehaviour
     public float minGfx = 68f;
     public float maxGfx = 200f;
 
-    private float timeAccumulate = 0;
+    //private float timeAccumulate = 0;
 
     //default constructor
     //doesn't set anything
@@ -74,13 +74,15 @@ public class SocietyBar : MonoBehaviour
     {
         //max = 200
         //min = 68
-        GameObject bar = GameObject.Find("Bar_Mask/Bar");
+        RectTransform child = this.gameObject.GetComponentInChildren<RectTransform>();
+
+        GameObject bar = child.GetComponentInChildren<RectTransform>().gameObject;
 
         RectTransform barRect = bar.GetComponent<RectTransform>();
 
         float diff = minGfx + ((resources * (maxGfx - minGfx)) / 100);
 
-        Debug.Log(diff);
+        //Debug.Log(diff);
 
         barRect.sizeDelta = new Vector2(diff, diff);
     }
