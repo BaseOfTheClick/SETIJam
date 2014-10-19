@@ -47,13 +47,15 @@ public class SocietyBar : MonoBehaviour
     public void Start()
     {
         conveyResources();
-        float diff = UnityEngine.Random.value * rateRange;
+        //float diff = UnityEngine.Random.value * rateRange;
 
-        diff = (UnityEngine.Random.value > 50) ? diff : -diff;
+        //diff = (UnityEngine.Random.value > 50) ? diff : -diff;
 
-        rateOfChange -= diff;
+        //rateOfChange -= diff;
 
-        rateOfChange = Mathf.Clamp(rateOfChange, 0.001f, 100f);
+        rateOfChange = (UnityEngine.Random.RandomRange(1, rateRange) * rateOfChange);
+
+        //rateOfChange = Mathf.Clamp(rateOfChange, 0.001f, 100f);
     }
 
     public float getRateOfChange()
