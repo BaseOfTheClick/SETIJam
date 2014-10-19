@@ -64,19 +64,25 @@ Socket& Socket::operator=(int&& fd)
 
 void Socket::setSockOpt(int opt, int on)
 {
-    int optval = on;
-    setsockopt(_fd, SOL_SOCKET, opt, &optval, sizeof(int));
+    setsockopt(_fd, SOL_SOCKET, opt, &on, sizeof(on));
 }
 
 void Socket::setNonBlock(int on)
 {
     int f = fcntl(_fd, F_GETFL, 0);
-    fcntl(_fd, F_SETFL, on ? f | O_NONBLOCK : f | ~(O_NONBLOCK));
+    if(on)
+        f |= O_NONBLOCK;
+    else
+        f |= ~(O_NONBLOCK);
+    fcntl(_fd, F_SETFL, f);
 }
 
 Socket& Socket::write(const char *data)
 {
-    ::write(_fd, data, strlen(data));
+    if(_fd == -1)
+        return *this;
+
+    ::send(_fd, data, strlen(data) + 1, 0);
     return *this;
 }
 

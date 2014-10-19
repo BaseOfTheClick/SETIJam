@@ -7,6 +7,7 @@
 #include "network/select.h"
 #include "tools/remove_if.hpp"
 #include <map>
+#include <memory>
 #include <iostream>
 using namespace std;
 
@@ -63,12 +64,12 @@ int main(int argc, char *argv[])
     }
 
     // Client and select poll structure setup
-    vector<ClientSocket> clients;
+    //vector<ClientSocket> clients;
     map<int, ClientSocket*> table;
     Multiplexer select;
 
     server.setNonBlock(1);
-    select.insert(&server);
+    select.insert(server);
 
     while(true)
     {
@@ -80,50 +81,56 @@ int main(int argc, char *argv[])
 
         for(int i = 0; i < FD_SETSIZE; ++i)
         {
-            if(i == server && select.setRead(i))
+            if(select.setRead(i))
             {
-                clients.emplace_back(ClientSocket());
-
-                ClientSocket& client = clients.back();
-                client = server.accept();
-
-                if(client)
+                if(server == i)
                 {
-                    client.setNonBlock(1);
-                    select.insert(&client);
-                    table[client] = &client;
-                }
-                else
-                    log << "A client was rejected from the server";
+                    unique_ptr<ClientSocket> client(new ClientSocket);
+                    *client = server.accept();
 
-            }
-            else if(select.setRead(i))
-            {
-                char buf[512];
+                    if(client)
+                    {
+                        client->setNonBlock(1);
+                        select.insert(*client);
 
-                int bytes = recv(i, buf, 511, 0);
-                if(bytes < 0)
-                {
-                    select.eradicate(i);
-                    tools::remove_if(clients,
-                        [i](const ClientSocket& sock) {
-                            return i == sock;
-                        }
-                    );
+                        if(table.find(*client) != table.end())
+                            table[*client]->close();
+
+                        table[*client] = client.get();
+                    }
+                    else
+                        log << "A client was rejected from the server";
+
                 }
                 else
                 {
-                    buf[bytes - 1] = '\0';
-                    cout << buf << endl;
-                    table[i]->write("Yolo!\n");
+                    char buf[512];
+
+                    int bytes = recv(i, buf, 511, 0);
+                    if(bytes <= 0)
+                    {
+                        select.eradicate(i);
+                    }
+                    else
+                    {
+                        buf[bytes] = '\0';
+                        cout << buf;
+                        /*
+                        if(select.setWrite(i))
+                            table[i]->write("Yolo!\n");
+                        */
+                    }
                 }
             }
         }
 
     }
 
-    for(auto& client : clients)
-        client.close();
+    for(auto& client : table)
+    {
+        if(client.second > 0)
+            client.second->close();
+    }
 
     return 0;
 }
