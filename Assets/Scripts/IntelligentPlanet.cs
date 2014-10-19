@@ -8,7 +8,7 @@ Add class description please
 */
 public class IntelligentPlanet : MonoBehaviour {
 	//rate of the change of the resources on this planet
-	public float rateOfChange;
+	public float spawnRate;
 	
 	//number of resources on the planet
     [SerializeField]
@@ -20,12 +20,12 @@ public class IntelligentPlanet : MonoBehaviour {
 	
 	//gives default values to fields
 	public IntelligentPlanet(float rateOfChange, int resources) {
-		this.rateOfChange = rateOfChange;
+		this.spawnRate = rateOfChange;
 		this.resources = resources;
 	}
 	
-	public float getRateOfChange() {
-		return rateOfChange;
+	public float getSpawnRate() {
+		return spawnRate;
 	}
 	
 	public int getResources() {
@@ -36,10 +36,17 @@ public class IntelligentPlanet : MonoBehaviour {
 		this.resources = res;
 	}
 	
-	public void setRateOfChange(float rateOfChange) {
-		this.rateOfChange = rateOfChange;
+	public void setSpawnRate(float rateOfChange) {
+		this.spawnRate = rateOfChange;
 	}
-	
+    public void addToSpawnRate(float toAdd)
+    {
+        this.spawnRate += toAdd;
+    }
+    public void multiplySpawnRate(float toMultiply)
+    {
+        this.spawnRate *= toMultiply;
+    }
 	public int takeResources(int packageSize) {
 		resources -= packageSize;
 		
