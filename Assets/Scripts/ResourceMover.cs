@@ -7,12 +7,14 @@ public class ResourceMover : MonoBehaviour {
     [System.NonSerialized]
     public Camera mainCam;
 
+    public float touchScaleFactor = 0.25f;
+
     private bool camOrbitEnabled = false;
     private bool pickupEnabled = false;
 
 	private GameObject planet;
 
-    RaycastHit camHit;
+    private RaycastHit camHit;
     
     // Use this for initialization
 	void Start () {
@@ -20,12 +22,12 @@ public class ResourceMover : MonoBehaviour {
 		planet = GameObject.Find("Planet");
 	}
 
-    
-
 	// Update is called once per frame
 	void Update () 
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Time.timeScale != 0)
+        {
+            if (Input.GetButtonDown("Fire1"))
         {
             pollInput();
         }
@@ -36,6 +38,14 @@ public class ResourceMover : MonoBehaviour {
         if (Input.GetButtonUp("Fire1"))
         {
             resetChecks();
+            if (camHit.transform.gameObject != null)
+            {
+                if (camHit.transform.gameObject.CompareTag("ResourcePackage"))
+                {
+                    Destroy(camHit.transform.gameObject);
+                }
+            }
+        }
         }
 
 	}
@@ -43,9 +53,14 @@ public class ResourceMover : MonoBehaviour {
     {
         if (camOrbitEnabled)
         {
-
+            
             planet.GetComponent<CameraController>().DoCamOrbit( Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") );
 
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                planet.GetComponent<CameraController>().DoCamOrbit(touch.deltaPosition.x * touchScaleFactor, touch.deltaPosition.y * touchScaleFactor);
+            }
         }
     }
 
@@ -62,6 +77,7 @@ public class ResourceMover : MonoBehaviour {
             else
             {
                 Debug.Log("Didn't Hit the Resource");
+                camOrbitEnabled = true;
             }
         }
         else

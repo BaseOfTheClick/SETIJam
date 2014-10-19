@@ -11,10 +11,12 @@ public class ResourceTrigger : MonoBehaviour {
             inTrigger = other.gameObject;
         }
         Debug.Log("On Trigger Enter Called");
+
     }
+
     void OnTriggerExit(Collider other)
     {
-        if (other == inTrigger)
+        if (other == inTrigger.collider)
         {
             inTrigger = null;
         }
@@ -23,20 +25,24 @@ public class ResourceTrigger : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetButtonUp("Fire1"))
+        if (Time.timeScale != 0)
         {
-            Debug.Log("In update : getButtonUp for trigger");
-            if (inTrigger != null)
+            if (Input.GetButtonUp("Fire1"))
             {
-                Debug.Log("Destroying Object");
-                this.GetComponent<SocietyBar>().addResources(inTrigger.GetComponent<ResourcePackage>().resourceQuantity);
-                this.GetComponent<SocietyBar>().conveyResources();
+                Debug.Log("In update : getButtonUp for trigger");
+                if (inTrigger != null)
+                {
+                    Debug.Log("Destroying Object");
+                    this.GetComponent<SocietyBar>().addResources(inTrigger.GetComponent<ResourcePackage>().resourceQuantity);
+                    inTrigger.GetComponent<ResourcePackage>().resourceQuantity = 0;
+                    this.GetComponent<SocietyBar>().conveyResources();
 
-                Destroy(inTrigger);
-            }
-            else
-            {
-                Debug.Log("inTrigger is null");
+                    Destroy(inTrigger);
+                }
+                else
+                {
+                    Debug.Log("inTrigger is null");
+                }
             }
         }
     }

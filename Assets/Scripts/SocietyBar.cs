@@ -22,8 +22,8 @@ public class SocietyBar : MonoBehaviour
     public int resourcesMax = 100;
 
     //constants for visual rep. of values
-    public float minGfx = 68f;
-    public float maxGfx = 200f;
+    public float minGfx = 7.5f;
+    public float maxGfx = 20f;
 
     //private float timeAccumulate = 0;
 
@@ -58,7 +58,33 @@ public class SocietyBar : MonoBehaviour
         this.rateOfChange = rOC;
     }
 
-    public void setResources(int res)
+    public void setRateRange(float rr)
+    {
+        this.rateRange = rr;
+    }
+
+    //adds a value to the rate of change
+    public void increaseRateOfChange(float toAdd)
+    {
+        this.rateOfChange += toAdd;
+    }
+
+    //increases the rate of change by a factor of the parameter
+    public void increaseRateOfChangeBy(float toMultiply)
+    {
+        this.rateOfChange *= toMultiply;
+    }
+
+    public void addToRateRange(float toAdd)
+    {
+        this.rateRange += toAdd;
+    }
+    public void multiplyRateRange(float toMultiply)
+    {
+        this.rateRange *= toMultiply;
+    }
+
+    public void setResources(int res) 
     {
         this.resources = res;
     }
@@ -72,7 +98,6 @@ public class SocietyBar : MonoBehaviour
     //translate discrete resource quantity to graphical representation
     public void conveyResources()
     {
-
         RectTransform barRect = new RectTransform();
 
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag("bar"))
@@ -92,8 +117,11 @@ public class SocietyBar : MonoBehaviour
     //updates the resources based on the rate of change
     public void updateResources()
     {
-        float randomDiff = (UnityEngine.Random.value < 0.5f) ? (UnityEngine.Random.value * rateRange) : -(UnityEngine.Random.value * rateRange);
-        resources = (resources - rateOfChange < 0) ? 0 : resources - (float)(rateOfChange + randomDiff) * Time.deltaTime;
+        float randomDiff = (UnityEngine.Random.value < 0.5f) ? 
+            (UnityEngine.Random.value * rateRange) : -(UnityEngine.Random.value * rateRange);
+
+        resources = (resources - rateOfChange < 0) ? 
+            0 : resources - (float)(rateOfChange + randomDiff) * Time.deltaTime;
     }
 
     public void Update()
