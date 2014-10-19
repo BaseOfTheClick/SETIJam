@@ -6,8 +6,8 @@ Galaxy::Galaxy() = default;
 using namespace std;
 Player& Galaxy::newPlayer(string name)
 {
-    if(this->find(name) != this->end())
-        throw std::domain_error("gg, wp");
+//    if(this->find(name) != this->end())
+//        throw std::domain_error("gg, wp");
 
     auto player = Player();
     auto& world = player.world();
