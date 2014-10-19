@@ -106,19 +106,19 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    //char buf[512];
+                    char buf[512];
 
-                    int bytes = recv(i, &buffer[0], 255, 0);
+                    int bytes = recv(i, buf, 255, 0);
                     if(bytes <= 0)
                     {
                         select.eradicate(i);
                     }
                     else
                     {
-                        buffer[bytes] = '\0';
-                        cout << buffer;
+                        buf[bytes] = '\0';
+                        cout << buf;
 
-                        if(buffer == "GIMME")
+                        if(string(buf) == "GIMME")
                             table[i]->write("green");
                         /*
                         if(select.setWrite(i))
