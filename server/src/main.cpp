@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
                         buf[bytes] = '\0';
                         cout << buf;
 
-                        if(string(buf) == "GIMME")
+                        if(string(buf).substr(0, 5) == "GIMME")
                             table[i]->write("green");
                         /*
                         if(select.setWrite(i))
