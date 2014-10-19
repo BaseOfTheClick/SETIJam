@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
     server.setNonBlock(1);
     select.insert(server);
 
+    string buffer(256, '\0');
+
     while(true)
     {
         if(select.poll() == -1)
@@ -104,17 +106,20 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    char buf[512];
+                    //char buf[512];
 
-                    int bytes = recv(i, buf, 511, 0);
+                    int bytes = recv(i, &buffer[0], 255, 0);
                     if(bytes <= 0)
                     {
                         select.eradicate(i);
                     }
                     else
                     {
-                        buf[bytes] = '\0';
-                        cout << buf;
+                        buffer[bytes] = '\0';
+                        cout << buffer;
+
+                        if(buffer == "GIMME")
+                            table[i]->write("green");
                         /*
                         if(select.setWrite(i))
                             table[i]->write("Yolo!\n");
