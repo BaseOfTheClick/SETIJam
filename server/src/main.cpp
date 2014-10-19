@@ -6,6 +6,7 @@
 #include "network/server.h"
 #include "network/select.h"
 #include "tools/remove_if.hpp"
+#include "game/galaxy.h"
 #include <map>
 #include <memory>
 #include <iostream>
@@ -66,13 +67,15 @@ int main(int argc, char *argv[])
     // Client and select poll structure setup
     //vector<ClientSocket> clients;
     map<int, unique_ptr<ClientSocket>> table;
+    map<int, string> names;
     Multiplexer select;
 
     server.setNonBlock(1);
     select.insert(server);
 
-    string buffer(256, '\0');
+    Galaxy galaxy;
 
+    string buffer(256, '\0');
     while(true)
     {
         if(select.poll() == -1)
@@ -98,25 +101,33 @@ int main(int argc, char *argv[])
                     else
                         log << "A client was rejected from the server";
 
+                    continue;
+                }
+
+                buffer.clear();
+                buffer.resize(256, '\0');
+                int bytes = recv(i, &buffer[0], 255, 0);
+                if(bytes <= 0)
+                {
+                    table[i]->close();
+                    galaxy.rmPlayer(names[i]);
+                    select.eradicate(i);
                 }
                 else
                 {
-                    char buf[512];
-
-                    int bytes = recv(i, buf, 511, 0);
-                    if(bytes < 0)
+                    buffer[bytes] = '\0';
+                    cout << "Client: " << buffer;
+                    auto pos = buffer.find(':');
+                    if(buffer.substr(0, pos) == "Login")
                     {
-
-                        select.eradicate(i);
-                    }
-                    else
-                    {
-                        buf[bytes] = '\0';
-                        cout << buf;
-                        if(string(buf).substr(0, 5) == "GIMME")
-                            table[i]->write("green\n");
+                        buffer.erase(buffer.find_last_of('\n'));
+                        string name = buffer.substr(pos + 1,
+                                                    buffer.size() - pos);
+                        galaxy.newPlayer(name);
+                        names[i] = name;
                     }
                 }
+
             }
         }
     }
