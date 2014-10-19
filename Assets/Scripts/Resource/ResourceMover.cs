@@ -38,7 +38,7 @@ public class ResourceMover : MonoBehaviour {
         if (Input.GetButtonUp("Fire1"))
         {
             resetChecks();
-            if (camHit.transform.gameObject != null)
+            if (camHit.transform != null)
             {
                 if (camHit.transform.gameObject.CompareTag("ResourcePackage"))
                 {
