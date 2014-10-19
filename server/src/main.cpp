@@ -7,7 +7,6 @@
 #include "network/select.h"
 #include "tools/remove_if.hpp"
 #include <map>
-#include <memory>
 #include <iostream>
 using namespace std;
 
@@ -64,14 +63,12 @@ int main(int argc, char *argv[])
     }
 
     // Client and select poll structure setup
-    //vector<ClientSocket> clients;
-    map<int, unique_ptr<ClientSocket>> table;
+    vector<ClientSocket> clients;
+    map<int, ClientSocket*> table;
     Multiplexer select;
 
     server.setNonBlock(1);
-    select.insert(server);
-
-    string buffer(256, '\0');
+    select.insert(&server);
 
     while(true)
     {
@@ -83,49 +80,50 @@ int main(int argc, char *argv[])
 
         for(int i = 0; i < FD_SETSIZE; ++i)
         {
-            if(select.setRead(i))
+            if(i == server && select.setRead(i))
             {
-                if(server == i)
+                clients.emplace_back(ClientSocket());
+
+                ClientSocket& client = clients.back();
+                client = server.accept();
+
+                if(client)
                 {
-                    ClientSocket *client = new ClientSocket(server.accept());
+                    client.setNonBlock(1);
+                    select.insert(&client);
+                    table[client] = &client;
+                }
+                else
+                    log << "A client was rejected from the server";
 
-                    if(client)
-                    {
-                        client->setNonBlock(1);
-                        select.insert(*client);
-                        table[*client] = unique_ptr<ClientSocket>(client);
-                    }
-                    else
-                        log << "A client was rejected from the server";
+            }
+            else if(select.setRead(i))
+            {
+                char buf[512];
 
+                int bytes = recv(i, buf, 511, 0);
+                if(bytes < 0)
+                {
+                    select.eradicate(i);
+                    tools::remove_if(clients,
+                        [i](const ClientSocket& sock) {
+                            return i == sock;
+                        }
+                    );
                 }
                 else
                 {
-                    char buf[512];
-
-                    int bytes = recv(i, buf, 511, 0);
-                    if(bytes < 0)
-                    {
-
-                        select.eradicate(i);
-                    }
-                    else
-                    {
-                        buf[bytes] = '\0';
-                        cout << buf;
-                        if(string(buf).substr(0, 5) == "GIMME")
-                            table[i]->write("green\n");
-                    }
+                    buf[bytes - 1] = '\0';
+                    cout << buf << endl;
+                    table[i]->write("Yolo!\n");
                 }
             }
         }
+
     }
 
-    for(auto& client : table)
-    {
-        if(client.second > 0)
-            client.second->close();
-    }
+    for(auto& client : clients)
+        client.close();
 
     return 0;
 }

@@ -11,14 +11,23 @@ Multiplexer::Multiplexer()
     FD_ZERO(&rfds);
 }
 
-void Multiplexer::insert(int sock)
+bool Multiplexer::insert(Socket *sock)
 {
-    FD_SET(sock, &afds);
+    for(auto& s : sockets)
+    {
+        if(*sock == *s)
+            return false;
+    }
+
+    sockets.emplace_back(sock);
+    FD_SET(*sock, &afds);
+
+    return true;
 }
 
 void Multiplexer::eradicate(int sock)
 {
-    FD_CLR(sock, &afds);
+    tools::remove_if(sockets, [sock](Socket *s) { return sock == *s; });
 }
 
 int Multiplexer::poll()

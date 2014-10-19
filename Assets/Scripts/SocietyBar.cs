@@ -117,8 +117,11 @@ public class SocietyBar : MonoBehaviour
     //updates the resources based on the rate of change
     public void updateResources()
     {
-        float randomDiff = (UnityEngine.Random.value < 0.5f) ? (UnityEngine.Random.value * rateRange) : -(UnityEngine.Random.value * rateRange);
-        resources = (resources - rateOfChange < 0) ? 0 : resources - (float)(rateOfChange + randomDiff) * Time.deltaTime;
+        float randomDiff = (UnityEngine.Random.value < 0.5f) ? 
+            (UnityEngine.Random.value * rateRange) : -(UnityEngine.Random.value * rateRange);
+
+        resources = (resources - rateOfChange < 0) ? 
+            0 : resources - (float)(rateOfChange + randomDiff) * Time.deltaTime;
     }
 
     public void Update()

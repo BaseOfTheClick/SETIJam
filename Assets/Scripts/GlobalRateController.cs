@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GlobalRateController : MonoBehaviour {
+public class GlobalRateController : MonoBehaviour
+{
     public float initialResourceSpawnRate = 1;
     public float initialBarDepletionRate = 1.5f;
     public float initialRateRange = 0.5f;
@@ -17,7 +18,7 @@ public class GlobalRateController : MonoBehaviour {
 
     private float econAverage = 0;
     private int econsFound = 0;
-    
+
     void Awake()
     {
         planet = GameObject.FindGameObjectWithTag(planetTag);
@@ -37,11 +38,13 @@ public class GlobalRateController : MonoBehaviour {
         return scienceIsLow;
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
         foreach (GameObject obj in societyBars)
         {
             float resources = obj.GetComponent<SocietyBar>().getResources();
+
             if (resources <= 0)
             {
                 if (this.GetComponent<ScienceGuy>().isScienceGuy(obj))
@@ -50,14 +53,14 @@ public class GlobalRateController : MonoBehaviour {
                 }
                 if (this.GetComponent<EconGuy>().isEconomist(obj))
                 {
-                    this.econIsLow = true;              
+                    this.econIsLow = true;
                 }
                 if (this.GetComponent<PoliticsGuy>().isPolitician(obj))
                 {
                     Application.LoadLevel(0);
                 }
             }
-            
+
             if (this.GetComponent<EconGuy>().isEconomist(obj))
             {
                 econAverage += resources;
@@ -68,8 +71,8 @@ public class GlobalRateController : MonoBehaviour {
                     this.GetComponent<ChangeGlobalRates>().setResourceSpawnRate((2.5f * (1 - (econAverage / 300)) + 0.5f));
                     econAverage = 0;
                     econsFound = 0;
-                } 
+                }
             }
         }
-	}
+    }
 }

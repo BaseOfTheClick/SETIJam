@@ -25,7 +25,9 @@ public class ResourceMover : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Time.timeScale != 0)
+        {
+            if (Input.GetButtonDown("Fire1"))
         {
             pollInput();
         }
@@ -43,6 +45,7 @@ public class ResourceMover : MonoBehaviour {
                     Destroy(camHit.transform.gameObject);
                 }
             }
+        }
         }
 
 	}
