@@ -6,6 +6,7 @@
 #include "network/server.h"
 #include "network/select.h"
 #include "tools/remove_if.hpp"
+#include "game/galaxy.h"
 #include <map>
 #include <iostream>
 using namespace std;
@@ -63,12 +64,24 @@ int main(int argc, char *argv[])
     }
 
     // Client and select poll structure setup
+<<<<<<< HEAD
     vector<ClientSocket> clients;
     map<int, ClientSocket*> table;
     Multiplexer select;
 
     server.setNonBlock(1);
     select.insert(&server);
+=======
+    //vector<ClientSocket> clients;
+    map<int, unique_ptr<ClientSocket>> table;
+    map<int, string> names;
+    Multiplexer select;
+
+    server.setNonBlock(1);
+    select.insert(server);
+
+    Galaxy galaxy;
+>>>>>>> kevr
 
     while(true)
     {
@@ -101,6 +114,7 @@ int main(int argc, char *argv[])
             {
                 char buf[512];
 
+<<<<<<< HEAD
                 int bytes = recv(i, buf, 511, 0);
                 if(bytes < 0)
                 {
@@ -110,13 +124,53 @@ int main(int argc, char *argv[])
                             return i == sock;
                         }
                     );
+=======
+                    continue;
+>>>>>>> kevr
                 }
-                else
+
+                char buf[256];
+                int bytes = recv(i, &buf[0], 255, 0);
+                if(bytes <= 0)
                 {
+<<<<<<< HEAD
                     buf[bytes - 1] = '\0';
                     cout << buf << endl;
                     table[i]->write("Yolo!\n");
+=======
+                    table[i]->close();
+                    galaxy.rmPlayer(names[i]);
+                    select.eradicate(i);
+                    continue;
                 }
+
+                buf[bytes] = '\0';
+                string buffer(buf);
+
+                cout << "Client: " << buffer;
+                auto pos = buffer.find(':');
+                if(buffer.substr(0, pos) == "Login")
+                {
+                    string name = buffer.substr(pos + 1,
+                                                buffer.size() - pos);
+
+                    Player *p;
+                    try { p = &galaxy.newPlayer(name); }
+                    catch(...)
+                    {
+                        table[i]->close();
+                        select.eradicate(i);
+                    } 
+
+                    names[i] = name;
+
+                    string planet = "Planet:" + to_string(p->world().x())
+                                    + ":" + to_string(p->world().y()) + "\n";
+                    table[i]->write(planet.c_str());
+
+>>>>>>> kevr
+                }
+                // End of client handler block
             }
         }
 
