@@ -14,7 +14,7 @@ public class ResourceTrigger : MonoBehaviour {
     }
     void OnTriggerExit(Collider other)
     {
-        if (other == inTrigger)
+        if (other == inTrigger.collider)
         {
             inTrigger = null;
         }
